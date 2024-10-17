@@ -1,0 +1,10 @@
+build:
+  model: OpenAI
+  prompt: ''
+  toolkits:
+  - NASA Toolkit
+  - NASA Toolkit
+project:
+  description: Configuration for building the Lightning Builder app
+  name: LightningBuilderApp
+  version: 1.0.0

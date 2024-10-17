@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Landing Page - Lightning Builder{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container">
+        <main>
+            <p class="lead" align="center">Welcome to Lightning Builder! Ready to get building lightning fast?</p>
+            <br/>
+            <br/>
+            <br/>
+            
+             
+            <div class="card" style="width: 30rem; margin: 0 auto;">
+                <video class="card-img-top" autoplay loop muted>
+                    <source src="static/images/lightning-builder-animated-logo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="card-body">
+                    <h5 class="card-title">No code, no problem! Just build.</h5>
+                    <p class="card-text">Use a visual and guided approach to build or start your next project. No coding experience needed.</p>
+                    <a href="/build" class="btn btn-primary">Lets Build!</a>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+        </main>
+    </div>
+</body>
+{% endblock %}
+

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Build Page - Lightning Builder{% endblock %}
+
+{% block content %}
+    <p class="lead" align="center">Let's get building!</p>
+    <br/>
+    <br/>
+    <div class="container" align="center">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Left column content -->
+                <h2>Compile</h2>
+
+                <!--Provider view block-->
+                <div id="modelCard" class="card" style="display: none;"> <!-- Empty card initially hidden -->
+                    <div class="card-body">
+                        <p id="modelText">Selected Provider: None</p> <!-- Placeholder text -->
+                    </div>
+                </div>
+
+                <!-- Add more content for the left column here -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div id="toolkitCard" class="card" style="display: none;">
+                            <div class="card-body">
+                                <p id="toolkitText">Selected Toolkit: None</p>
+                                <button id="addToolkitButton" class="btn btn-primary">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 right-column" style="display: none;">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Content for the second card -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Right column content -->
+                <h2>Configure</h2>
+                <div class="accordion" id="configureFlowAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#selectModel" aria-expanded="true" aria-controls="selectModel">
+                                Select a provider you would like to use for your agent.
+                            </button>
+                        </h2>
+                        <div id="selectModel" class="accordion-collapse collapse show" data-bs-parent="#configureFlowAccordion">
+                            <div class="accordion-body">
+                                <p>We try to use the latest and best suited models from each provider.</p>
+                                <select class="form-select" aria-label="Default select example" id="providerSelect">
+                                    <option selected>Select Provider</option>
+                                    <option value="1">OpenAI</option>
+                                    <option value="2">Meta Llama</option>
+                                    <option value="3">Anthropic</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" id="addTools" style="display: none;"> <!-- Initially hidden -->
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#addToolsContent" aria-expanded="false" aria-controls="addToolsContent">
+                                Add Tools
+                            </button>
+                        </h2>
+                        <div id="addToolsContent" class="accordion-collapse collapse" data-bs-parent="#configureFlowAccordion">
+                            <div class="accordion-body">
+                                <!-- Content for Add Tools goes here -->
+                                <p>Tools are functions that your agent can call. They are used to perform specific tasks.</p>
+                                <p>Learn what each tool does here:</p>
+                                <ul></ul>
+                                    <li>NASA Toolkit <a href="https://python.langchain.com/docs/integrations/tools/nasa/">(info)</a></li>
+                                    <li>Duck Duck Go Search <a href="https://python.langchain.com/docs/integrations/tools/ddg/#related-1">(info)</a></li>
+                                    <li>Wolfram Alpha <a href="https://python.langchain.com/docs/integrations/providers/wolfram_alpha/#tool">(info)</a></li>
+                                </ul>
+                                <select class="form-select" aria-label="Default select example" id="toolSelect">
+                                    <option selected>Select Tool</option>
+                                    <option value="1">NASA Toolkit</option>
+                                    <option value="2">Duck Duck Go Search</option>
+                                    <option value="3">Wolfram Alpha</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" id="addPrompt" style="display: none;"> <!-- Initially hidden -->
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#addPromptContent" aria-expanded="false" aria-controls="addPromptContent">
+                                Add Prompt
+                            </button>
+                        </h2>
+                        <div id="addPromptContent" class="accordion-collapse collapse" data-bs-parent="#configureFlowAccordion">
+                            <div class="accordion-body">
+                                <!-- Content for Add Prompt goes here -->
+                                <h3>Enter agent configuration prompt here.</h3>
+                                <p>Example: You are a helpful assistant that can answer questions and help with tasks.</p>
+                                <textarea class="form-control" rows="3" id="promptText"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div align="center">
+        <button id="generateConfigButton" class="btn btn-success mt-4">Generate Configuration</button>
+    </div>
+
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <!-- Include the external JavaScript file -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
