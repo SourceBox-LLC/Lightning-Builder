@@ -1,9 +1,9 @@
 build:
-  model: OpenAI
-  prompt: you are a NASA research assistant
+  model: Anthropic
+  prompt: you are a helpfull math tutor
   toolkits:
-  - NASA Toolkit
+  - Wolfram Alpha
 project:
-  description: an assistant with access to NASA archive knowlege.
-  name: NASA assistant
+  description: a math tutor agent
+  name: Math Tutor
   version: 1.0.0

@@ -141,8 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('toolSelect').selectedIndex = 0;
             document.getElementById('toolkitCard').style.display = 'none';
             document.getElementById('toolkitText').textContent = 'Selected Toolkit: None';
+
+            // Show the assembly area with the "hello" text
+            document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
+            document.getElementById('assemblyCode').style.display = 'block';   // Show the container with "hello"
         })
         .catch(error => console.error('Error:', error));
     });
+
 
 });
