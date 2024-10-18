@@ -1,10 +1,9 @@
 build:
-  model: Meta Llama
-  prompt: you are a helpful math tutor with access to the web and a complex calculator
+  model: OpenAI
+  prompt: you are a NASA research assistant
   toolkits:
-  - Wolfram Alpha
-  - Duck Duck Go Search
+  - NASA Toolkit
 project:
-  description: a math tutor agent
-  name: Math Tutor
+  description: an assistant with access to NASA archive knowlege.
+  name: NASA assistant
   version: 1.0.0

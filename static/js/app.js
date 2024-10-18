@@ -118,7 +118,31 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log("Configuration generated successfully:", data);
             alert(data.message);
+
+            // Reset values after configuration is generated successfully
+            document.getElementById('modelText').textContent = 'Selected Model: None';
+            document.getElementById('promptText').value = ''; // Clear the prompt input
+            document.getElementById('agentName').value = ''; // Clear the agent name input
+            document.getElementById('agentDescription').value = ''; // Clear the agent description input
+            selectedToolkits.length = 0; // Clear the selected toolkits array
+
+            // Reset the toolkits display section
+            const rightColumn = document.querySelector('.right-column');
+            const cardBody = rightColumn.querySelector('.card-body');
+            cardBody.innerHTML = ''; // Clear toolkit cards from the right column
+            rightColumn.style.display = 'none'; // Hide the right column
+
+            // Hide the model card and Add Tools section
+            document.getElementById('modelCard').style.display = 'none';
+            document.getElementById('addTools').style.display = 'none';
+            document.getElementById('addPrompt').style.display = 'none';
+
+            // Reset toolkit selection
+            document.getElementById('toolSelect').selectedIndex = 0;
+            document.getElementById('toolkitCard').style.display = 'none';
+            document.getElementById('toolkitText').textContent = 'Selected Toolkit: None';
         })
         .catch(error => console.error('Error:', error));
     });
+
 });
