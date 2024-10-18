@@ -21,9 +21,9 @@ def generate_config():
     data = request.json
     config = {
         'project': {
-            'name': 'LightningBuilderApp',
+            'name': data.get('agent_name'),
             'version': '1.0.0',
-            'description': 'Configuration for building the Lightning Builder app'
+            'description': data.get('agent_description')
         },
         'build': {
             'model': data.get('selected_model'),

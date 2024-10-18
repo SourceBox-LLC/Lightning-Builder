@@ -7,6 +7,18 @@
     <br/>
     <br/>
     <div class="container" align="center">
+        <!--agent name and description-->
+        <div class="form-group">
+            <label for="agentName">Agent Name:</label>
+            <input type="text" class="form-control" id="agentName" placeholder="Enter agent name">
+        </div>
+        <div class="form-group">
+            <label for="agentDescription">Agent Description:</label>
+            <textarea class="form-control" id="agentDescription" rows="3" placeholder="Enter agent description"></textarea>
+        </div>
+        <br/>
+        <br/>
+        <br/>
         <div class="row">
             <div class="col-md-6">
                 <!-- Left column content -->
@@ -20,16 +32,14 @@
                 </div>
 
                 <!-- Add more content for the left column here -->
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div id="toolkitCard" class="card" style="display: none;">
-                            <div class="card-body">
-                                <p id="toolkitText">Selected Toolkit: None</p>
-                                <button id="addToolkitButton" class="btn btn-primary">+</button>
-                            </div>
+                <div>
+                    <div id="toolkitCard" class="card" style="display: none;">
+                        <div class="card-body">
+                            <p id="toolkitText">Selected Toolkit: None</p>
+                            <button id="addToolkitButton" class="btn btn-primary">+</button>
                         </div>
                     </div>
-                    <div class="col-md-6 right-column" style="display: none;">
+                    <div class="right-column" style="display: none;">
                         <div class="card">
                             <div class="card-body">
                                 <!-- Content for the second card -->

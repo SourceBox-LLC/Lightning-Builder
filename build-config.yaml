@@ -1,10 +1,10 @@
 build:
-  model: OpenAI
-  prompt: ''
+  model: Meta Llama
+  prompt: you are a helpful math tutor with access to the web and a complex calculator
   toolkits:
-  - NASA Toolkit
-  - NASA Toolkit
+  - Wolfram Alpha
+  - Duck Duck Go Search
 project:
-  description: Configuration for building the Lightning Builder app
-  name: LightningBuilderApp
+  description: a math tutor agent
+  name: Math Tutor
   version: 1.0.0
