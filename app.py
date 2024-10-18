@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import yaml
+import tempfile
+import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS if needed
@@ -32,10 +34,23 @@ def generate_config():
         }
     }
     
-    with open('build-config.yaml', 'w') as file:
+    # Create a temporary directory
+    temp_dir = tempfile.mkdtemp()
+    print(f"Temporary directory created at: {temp_dir}")
+
+    # Define the path for the build-config.yaml file
+    config_file_path = os.path.join(temp_dir, 'build-config.yaml')
+    
+    # Write the configuration to the YAML file in the temporary directory
+    with open(config_file_path, 'w') as file:
         yaml.dump(config, file)
     
-    return jsonify({'message': 'Configuration file generated successfully'})
+    print(f"Configuration file created at: {config_file_path}")
+    
+    return jsonify({
+        'message': 'Configuration file generated successfully',
+        'config_file_path': config_file_path  # Optionally return the path
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
