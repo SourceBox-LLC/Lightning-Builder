@@ -4,6 +4,7 @@ import yaml
 from openai import OpenAI
 from dotenv import load_dotenv
 import random
+import shutil
 
 
 
@@ -189,26 +190,85 @@ def gpt_rewrite(compiled_template):
         return f"Error: {e}"
 
 
-def export_final_template(final_template):
 
-    # Generate a random 5 digit number
+
+def generate_requirements(final_template, build_file_path):
+    try:
+        # Call GPT API with formatted history and vector results
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": '''
+                You are a requirements.txt writer.
+                Your only function is to generate the latest requirements.txt based off of code you are given.
+
+                RULES:
+                Only generate requirements.txt based off the code input
+                Must install the latest versions of each package
+
+                in: code ==> out: requirements.txt
+
+                Example:
+                package1==1.8.2
+                package2==8.1.7
+                package3==0.4.6
+                package4==3.0.3
+                package5==5.0.0
+                '''},
+                {"role": "user", "content": final_template}
+            ]
+        )
+
+        response_content = response.choices[0].message.content
+
+        # Save the requirements to a requirements.txt file
+        temp_dir, template_file_path, requirements_file_path, build_file_destination_path = export_final_template(final_template, build_file_path)  # Call the export function
+        with open(requirements_file_path, 'w') as req_file:  # Open the requirements file in write mode
+            req_file.write(response_content)  # Write the requirements content to the file
+
+        print(f"Requirements file exported to: {requirements_file_path}")  # Optional: Print the file path for confirmation
+
+        return response_content
+
+    except Exception as e:
+        print(f"Error generating GPT response: {e}")
+        return f"Error: {e}"
+
+
+
+
+def export_final_template(final_template, build_file_path):
+    # Generate a random 5 digit number for unique folder naming
     random_number = random.randint(10000, 99999)
     print(f"Generated random 5 digit number: {random_number}")
 
-    # Create a temporary directory if it doesn't exist
-    temp_dir = tempfile.gettempdir()  # Get the path to the temporary directory
-    file_name = f'user_template_{random_number}.py'
-    file_path = os.path.join(temp_dir, file_name)  # Define the path for the new file
+    # Create a temporary directory for the agent template and requirements
+    temp_dir = tempfile.mkdtemp(prefix=f'agent_template_{random_number}_')  # Create a unique temp directory
+    print(f"Temporary directory created at: {temp_dir}")
 
-    # Open the file in append mode and write the final_template to it
-    with open(file_path, 'a') as file:  # 'a' mode to append to the file
+    # Define the file names
+    template_file_name = 'user_template.py'
+    requirements_file_name = 'requirements.txt'
+    build_file_name = 'build-config.yaml'  # Name for the build file
+
+    # Define the paths for the new files
+    template_file_path = os.path.join(temp_dir, template_file_name)
+    requirements_file_path = os.path.join(temp_dir, requirements_file_name)
+    build_file_destination_path = os.path.join(temp_dir, build_file_name)  # Path for the build file
+
+    # Open the file in write mode and write the final_template to it
+    with open(template_file_path, 'w') as file:  # 'w' mode to write to the file
         file.write(final_template)  # Write the final_template content to the file
 
-    print(f"file name: {file_name}")
-    print(f"Final template exported to: {file_path}")  # Optional: Print the file path for confirmation
+    # Copy the build configuration file to the temporary directory
+    with open(build_file_path, 'r') as src_file:
+        with open(build_file_destination_path, 'w') as dest_file:
+            dest_file.write(src_file.read())  # Write the build configuration content to the new file
 
-    return file_path, file_name
+    print(f"Template file exported to: {template_file_path}")  # Optional: Print the file path for confirmation
+    print(f"Build file exported to: {build_file_destination_path}")  # Optional: Print the file path for confirmation
 
+    return temp_dir, template_file_path, requirements_file_path, build_file_destination_path  # Return the directory and file paths
 
 
 # Example usage
@@ -227,6 +287,12 @@ if __name__ == "__main__":
     print(final_template)
 
 
+    print("\n\nGENERATED REQUIREMENTS:\n\n")
+    requirements = generate_requirements(final_template)
+    print(requirements)
+
+
     print("\n\nExporting Template.........\n\n")
     export_final_template(final_template)
+
 

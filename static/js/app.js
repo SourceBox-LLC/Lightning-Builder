@@ -188,10 +188,48 @@ project:
 
                 // Display the final template code in the assemblyCode section
                 document.getElementById('assemblyCode').innerHTML = `<pre>${assembleData.final_template}</pre>`; // Use <pre> for formatting
+
+                // Display the generated requirements in the requirements section
+                document.getElementById('assemblyRequirementsHeader').style.display = 'block'; // Show requirements header
+                document.getElementById('assemblyRequirements').style.display = 'block'; // Show requirements section
+                document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`; // Use <pre> for formatting
             })
             .catch(error => console.error('Error during assembly:', error));
         })
         .catch(error => console.error('Error:', error));
+    });
+
+
+    // Handle download agent button click
+    document.getElementById('downloadTemplate').addEventListener('click', function() {
+        console.log("Downloading agent...");
+
+        // Trigger the download-agent route
+        fetch('/download-agent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();  // Convert the response to a Blob
+            } else {
+                throw new Error('Failed to download agent');
+            }
+        })
+        .then(blob => {
+            // Create a link element to download the file
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'agent_template.zip';  // Set the default file name
+            document.body.appendChild(a);
+            a.click();  // Programmatically click the link to trigger the download
+            a.remove();  // Remove the link from the document
+            window.URL.revokeObjectURL(url);  // Release the object URL
+        })
+        .catch(error => console.error('Error downloading agent:', error));
     });
 
 
