@@ -1,0 +1,6 @@
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from langgraph.checkpoint.memory import MemorySaver
+
+# Create the agent
+memory = MemorySaver()
+model = ChatNVIDIA(model="meta/llama3-70b-instruct")

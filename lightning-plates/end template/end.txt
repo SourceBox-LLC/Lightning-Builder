@@ -1,0 +1,19 @@
+from langchain_core.messages import HumanMessage
+from langgraph.prebuilt import create_react_agent
+
+agent_executor = create_react_agent(model, tools, checkpointer=memory)
+
+# Use the agent
+config = {"configurable": {"thread_id": "abc123"}}
+for chunk in agent_executor.stream(
+    {"messages": [HumanMessage(content="hi im bob! and i live in olympia washington")]}, config
+):
+    print(chunk)
+    print("----")
+
+prompt = input("Enter a prompt: ")
+for chunk in agent_executor.stream(
+    {"messages": [HumanMessage(content=prompt)]}, config
+):
+    print(chunk)
+    print("----")

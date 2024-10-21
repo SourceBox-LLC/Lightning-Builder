@@ -1,0 +1,6 @@
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import MemorySaver
+
+# Create the agent
+memory = MemorySaver()
+model = ChatOpenAI(model="gpt-4")

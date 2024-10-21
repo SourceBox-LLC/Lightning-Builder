@@ -142,12 +142,58 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('toolkitCard').style.display = 'none';
             document.getElementById('toolkitText').textContent = 'Selected Toolkit: None';
 
-            // Show the assembly area with the "hello" text
+            // Show the assembly area
             document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
-            document.getElementById('assemblyCode').style.display = 'block';   // Show the container with "hello"
+            document.getElementById('assemblyCode').style.display = 'block';   // Show the container
+
+            // Automatically fetch and display the configuration
+            fetch('/display-config')
+                .then(response => response.json())
+                .then(configData => {
+                    if (configData.error) {
+                        alert(configData.error);
+                    } else {
+                        // Convert the configData back to a YAML string for display
+                        const yamlString = `
+build:
+  model: ${configData.build.model}
+  prompt: ${configData.build.prompt}
+  toolkits:
+  ${configData.build.toolkits.map(toolkit => `  - ${toolkit}`).join('\n')}
+project:
+  description: ${configData.project.description}
+  name: ${configData.project.name}
+  version: ${configData.project.version}
+                        `;
+
+                        // Display the configuration in the buildFileContent section
+                        document.getElementById('configContent').textContent = yamlString; // Use <pre> for formatting
+                        document.getElementById('buildFileHeader').style.display = 'block'; // Show header
+                        document.getElementById('buildFileContent').style.display = 'block'; // Show content
+                    }
+                })
+                .catch(error => console.error('Error fetching configuration:', error));
+
+            // Trigger the assemble-config route
+            fetch('/assemble-config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(assembleData => {
+                console.log("Template assembled successfully:", assembleData);
+                alert(assembleData.message);
+
+                // Display the final template code in the assemblyCode section
+                document.getElementById('assemblyCode').innerHTML = `<pre>${assembleData.final_template}</pre>`; // Use <pre> for formatting
+            })
+            .catch(error => console.error('Error during assembly:', error));
         })
         .catch(error => console.error('Error:', error));
     });
 
 
+    
 });
