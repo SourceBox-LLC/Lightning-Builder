@@ -6,6 +6,21 @@
     <p class="lead" align="center">Let's get building!</p>
     <br/>
     <br/>
+    <br/>
+    <br/>
+    <div class="container" align="center">  
+        <h3>Shortcut:</h3>
+        <button id="uploadConfigurationButton" class="btn btn-primary">Upload Configuration</button>
+        <br/>
+        <br/>
+        <!-- Upload Configuration Section -->
+        <div id="uploadConfigSection" style="display: none;">
+            <textarea id="configTextarea" class="form-control" rows="10" placeholder="Paste your build-config.yaml content here"></textarea>
+            <button id="submitConfigButton" class="btn btn-primary mt-2">Submit Configuration</button>
+        </div>
+    </div>
+    <br/>
+    <br/>
     <div class="container" align="center">
         <!--agent name and description-->
         <div class="form-group">
@@ -23,6 +38,7 @@
             <div class="col-md-6">
                 <!-- Left column content -->
                 <h2>Compile</h2>
+                
 
                 <!--Provider view block-->
                 <div id="modelCard" class="card" style="display: none;"> <!-- Empty card initially hidden -->

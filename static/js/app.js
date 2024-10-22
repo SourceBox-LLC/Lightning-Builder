@@ -228,10 +228,73 @@ project:
             a.click();  // Programmatically click the link to trigger the download
             a.remove();  // Remove the link from the document
             window.URL.revokeObjectURL(url);  // Release the object URL
+
+            // Trigger the delete-files route
+            return fetch('/delete-files', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
         })
-        .catch(error => console.error('Error downloading agent:', error));
+        .then(response => {
+            if (response.ok) {
+                console.log('Files and directory deleted successfully.');
+            } else {
+                throw new Error('Failed to delete files and directory');
+            }
+        })
+        .catch(error => console.error('Error:', error));
     });
 
 
-    
+    // Handle upload configuration button click
+    const uploadButton = document.getElementById('uploadConfigurationButton');
+    if (uploadButton) {
+        uploadButton.addEventListener('click', function() {
+            const uploadConfigSection = document.getElementById('uploadConfigSection');
+            if (uploadConfigSection) {
+                uploadConfigSection.style.display = 'block'; // Show the textarea and submit button
+            } else {
+                console.error('Element with ID "uploadConfigSection" not found.');
+            }
+        });
+    } else {
+        console.error('Element with ID "uploadConfigurationButton" not found.');
+    }
+
+    // Handle submit configuration button click
+    const submitButton = document.getElementById('submitConfigButton');
+    if (submitButton) {
+        submitButton.addEventListener('click', function() {
+            const configContent = document.getElementById('configTextarea').value.trim();
+            if (configContent) {
+                console.log("Submitting custom configuration...");
+
+                // Send the configuration to the server
+                fetch('/upload-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ config: configContent })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert('Configuration uploaded successfully');
+                        // Optionally hide the textarea after submission
+                        document.getElementById('uploadConfigSection').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error uploading configuration:', error));
+            } else {
+                alert('Please enter a valid configuration.');
+            }
+        });
+    } else {
+        console.error('Element with ID "submitConfigButton" not found.');
+    }
 });

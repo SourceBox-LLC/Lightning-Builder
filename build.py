@@ -97,8 +97,6 @@ def gather_templates(config):
         template_dict["model template"] = model_template
 
 
-
-
     # check which tools are being used
     toolkits = config['build']['toolkits']
 
@@ -194,7 +192,6 @@ def gpt_rewrite(compiled_template):
 
 def generate_requirements(final_template, build_file_path):
     try:
-        # Call GPT API with formatted history and vector results
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -221,13 +218,7 @@ def generate_requirements(final_template, build_file_path):
 
         response_content = response.choices[0].message.content
 
-        # Save the requirements to a requirements.txt file
-        temp_dir, template_file_path, requirements_file_path, build_file_destination_path = export_final_template(final_template, build_file_path)  # Call the export function
-        with open(requirements_file_path, 'w') as req_file:  # Open the requirements file in write mode
-            req_file.write(response_content)  # Write the requirements content to the file
-
-        print(f"Requirements file exported to: {requirements_file_path}")  # Optional: Print the file path for confirmation
-
+        # Return the requirements content instead of writing it here
         return response_content
 
     except Exception as e:
@@ -237,38 +228,42 @@ def generate_requirements(final_template, build_file_path):
 
 
 
+
 def export_final_template(final_template, build_file_path):
     # Generate a random 5 digit number for unique folder naming
     random_number = random.randint(10000, 99999)
+    folder_name = f'agent_template_{random_number}'
     print(f"Generated random 5 digit number: {random_number}")
 
-    # Create a temporary directory for the agent template and requirements
-    temp_dir = tempfile.mkdtemp(prefix=f'agent_template_{random_number}_')  # Create a unique temp directory
-    print(f"Temporary directory created at: {temp_dir}")
+    # Create a directory in the current working directory
+    cwd = os.getcwd()
+    output_dir = os.path.join(cwd, folder_name)
+    os.makedirs(output_dir, exist_ok=True)
+    print(f"Directory created at: {output_dir}")
 
     # Define the file names
     template_file_name = 'user_template.py'
     requirements_file_name = 'requirements.txt'
-    build_file_name = 'build-config.yaml'  # Name for the build file
+    build_file_name = 'build-config.yaml'
 
     # Define the paths for the new files
-    template_file_path = os.path.join(temp_dir, template_file_name)
-    requirements_file_path = os.path.join(temp_dir, requirements_file_name)
-    build_file_destination_path = os.path.join(temp_dir, build_file_name)  # Path for the build file
+    template_file_path = os.path.join(output_dir, template_file_name)
+    requirements_file_path = os.path.join(output_dir, requirements_file_name)
+    build_file_destination_path = os.path.join(output_dir, build_file_name)
 
     # Open the file in write mode and write the final_template to it
-    with open(template_file_path, 'w') as file:  # 'w' mode to write to the file
-        file.write(final_template)  # Write the final_template content to the file
+    with open(template_file_path, 'w') as file:
+        file.write(final_template)
 
-    # Copy the build configuration file to the temporary directory
+    # Copy the build configuration file to the new directory
     with open(build_file_path, 'r') as src_file:
         with open(build_file_destination_path, 'w') as dest_file:
-            dest_file.write(src_file.read())  # Write the build configuration content to the new file
+            dest_file.write(src_file.read())
 
-    print(f"Template file exported to: {template_file_path}")  # Optional: Print the file path for confirmation
-    print(f"Build file exported to: {build_file_destination_path}")  # Optional: Print the file path for confirmation
+    print(f"Template file exported to: {template_file_path}")
+    print(f"Build file exported to: {build_file_destination_path}")
 
-    return temp_dir, template_file_path, requirements_file_path, build_file_destination_path  # Return the directory and file paths
+    return output_dir, template_file_path, requirements_file_path, build_file_destination_path
 
 
 # Example usage
@@ -294,5 +289,6 @@ if __name__ == "__main__":
 
     print("\n\nExporting Template.........\n\n")
     export_final_template(final_template)
+
 
 
