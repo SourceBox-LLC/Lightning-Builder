@@ -199,7 +199,6 @@ project:
         .catch(error => console.error('Error:', error));
     });
 
-
     // Handle download agent button click
     document.getElementById('downloadTemplate').addEventListener('click', function() {
         console.log("Downloading agent...");
@@ -247,7 +246,6 @@ project:
         .catch(error => console.error('Error:', error));
     });
 
-
     // Handle upload configuration button click
     const uploadButton = document.getElementById('uploadConfigurationButton');
     if (uploadButton) {
@@ -255,6 +253,14 @@ project:
             const uploadConfigSection = document.getElementById('uploadConfigSection');
             if (uploadConfigSection) {
                 uploadConfigSection.style.display = 'block'; // Show the textarea and submit button
+
+                // Disable all input fields except the textarea and submit button
+                const inputs = document.querySelectorAll('input, textarea, button');
+                inputs.forEach(input => {
+                    if (input !== document.getElementById('configTextarea') && input !== document.getElementById('submitConfigButton')) {
+                        input.disabled = true;
+                    }
+                });
             } else {
                 console.error('Element with ID "uploadConfigSection" not found.');
             }
@@ -272,7 +278,7 @@ project:
                 console.log("Submitting custom configuration...");
 
                 // Send the configuration to the server
-                fetch('/upload-config', {
+                fetch('/custom-config', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -287,6 +293,45 @@ project:
                         alert('Configuration uploaded successfully');
                         // Optionally hide the textarea after submission
                         document.getElementById('uploadConfigSection').style.display = 'none';
+
+                        // Use the parsed JSON data directly
+                        const configData = data.config_data; // Assuming the server returns this key
+                        document.getElementById('modelText').textContent = 'Selected Model: ' + configData.build.model;
+                        document.getElementById('promptText').value = configData.build.prompt;
+                        document.getElementById('agentName').value = configData.project.name;
+                        document.getElementById('agentDescription').value = configData.project.description;
+                        selectedToolkits = configData.build.toolkits;
+
+                        // Update the UI to reflect the parsed configuration
+                        const rightColumn = document.querySelector('.right-column');
+                        const cardBody = rightColumn.querySelector('.card-body');
+                        cardBody.innerHTML = ''; // Clear toolkit cards from the right column
+                        selectedToolkits.forEach(toolkit => {
+                            var toolkitCard = document.createElement('div');
+                            toolkitCard.className = 'card mt-2';
+                            var toolkitCardBody = document.createElement('div');
+                            toolkitCardBody.className = 'card-body';
+                            toolkitCardBody.textContent = "Toolkit: " + toolkit;
+                            toolkitCard.appendChild(toolkitCardBody);
+                            cardBody.appendChild(toolkitCard);
+                        });
+                        rightColumn.style.display = 'block'; // Show the right column
+
+                        // Perform the same actions as generate configuration
+                        // Show the assembly area
+                        document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
+                        document.getElementById('assemblyCode').style.display = 'block';   // Show the container
+
+                        // Automatically fetch and display the configuration
+                        fetch('/display-config')
+                            .then(response => response.json())
+                            .then(configData => {
+                                document.getElementById('assemblyCode').innerHTML = `<pre>${configData.final_template}</pre>`; // Use <pre> for formatting
+                                document.getElementById('assemblyRequirementsHeader').style.display = 'block'; // Show requirements header
+                                document.getElementById('assemblyRequirements').style.display = 'block'; // Show requirements section
+                                document.getElementById('assemblyRequirements').innerHTML = `<pre>${configData.requirements}</pre>`; // Use <pre> for formatting
+                            })
+                            .catch(error => console.error('Error displaying configuration:', error));
                     }
                 })
                 .catch(error => console.error('Error uploading configuration:', error));

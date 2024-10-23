@@ -59,6 +59,46 @@ def generate_config():
         'config_file_path': config_file_path
     })
 
+
+
+@app.route('/custom-config', methods=['POST'])
+def custom_config():
+    data = request.json
+    config_content = data.get('config')
+
+    if not config_content:
+        return jsonify({'error': 'No configuration content provided.'}), 400
+
+    try:
+        # Parse the YAML configuration content
+        config_data = yaml.safe_load(config_content)
+        logger.info(f"Parsed configuration data: {config_data}")
+
+        # Write the configuration to a file
+        cwd = os.getcwd()
+        config_file_path = os.path.join(cwd, 'build-config.yaml')
+        with open(config_file_path, 'w') as file:
+            yaml.dump(config_data, file)
+        logger.info(f"Custom configuration file created at: {config_file_path}")
+
+        # Store the configuration data in the session
+        session['config_data'] = config_data
+        session['config_file_path'] = config_file_path
+
+        return jsonify({
+            'message': 'Custom configuration processed successfully',
+            'config_file_path': config_file_path,
+            'config_data': config_data
+        })
+    except yaml.YAMLError as e:
+        logger.error(f"Error parsing YAML configuration: {e}")
+        return jsonify({'error': 'Failed to parse configuration file.'}), 500
+    except Exception as e:
+        logger.error(f"Error writing custom configuration file: {e}")
+        return jsonify({'error': 'Failed to write custom configuration file.'}), 500
+
+
+
 @app.route('/display-config')
 def display_config():
     config_file_path = session.get('config_file_path')  # Get from session
