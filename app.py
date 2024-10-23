@@ -64,9 +64,13 @@ def generate_config():
 @app.route('/custom-config', methods=['POST'])
 def custom_config():
     data = request.json
+    logger.info("Received request for custom configuration.")
+    
     config_content = data.get('config')
+    logger.debug(f"Config content received: {config_content}")
 
     if not config_content:
+        logger.error("No configuration content provided.")
         return jsonify({'error': 'No configuration content provided.'}), 400
 
     try:
@@ -84,6 +88,7 @@ def custom_config():
         # Store the configuration data in the session
         session['config_data'] = config_data
         session['config_file_path'] = config_file_path
+        logger.info("Configuration data stored in session.")
 
         return jsonify({
             'message': 'Custom configuration processed successfully',
@@ -101,7 +106,10 @@ def custom_config():
 
 @app.route('/display-config')
 def display_config():
-    config_file_path = session.get('config_file_path')  # Get from session
+    logger.info("Received request to display configuration.")
+    
+    config_file_path = session.get('config_file_path')
+    logger.debug(f"Config file path from session: {config_file_path}")
 
     if config_file_path is None or not os.path.exists(config_file_path):
         logger.error("Configuration file not found.")

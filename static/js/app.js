@@ -274,10 +274,12 @@ project:
     if (submitButton) {
         submitButton.addEventListener('click', function() {
             const configContent = document.getElementById('configTextarea').value.trim();
+            console.log("Config content:", configContent);
+
             if (configContent) {
                 console.log("Submitting custom configuration...");
 
-                // Send the configuration to the server
+                // Use /custom-config instead of /generate-config
                 fetch('/custom-config', {
                     method: 'POST',
                     headers: {
@@ -287,52 +289,72 @@ project:
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert('Configuration uploaded successfully');
-                        // Optionally hide the textarea after submission
-                        document.getElementById('uploadConfigSection').style.display = 'none';
+                    console.log("Configuration processed successfully:", data);
+                    alert(data.message);
 
-                        // Use the parsed JSON data directly
-                        const configData = data.config_data; // Assuming the server returns this key
-                        document.getElementById('modelText').textContent = 'Selected Model: ' + configData.build.model;
-                        document.getElementById('promptText').value = configData.build.prompt;
-                        document.getElementById('agentName').value = configData.project.name;
-                        document.getElementById('agentDescription').value = configData.project.description;
-                        selectedToolkits = configData.build.toolkits;
+                    // Reset values after configuration is processed successfully
+                    document.getElementById('modelText').textContent = 'Selected Model: None';
+                    document.getElementById('promptText').value = ''; // Clear the prompt input
+                    document.getElementById('agentName').value = ''; // Clear the agent name input
+                    document.getElementById('agentDescription').value = ''; // Clear the agent description input
+                    selectedToolkits.length = 0; // Clear the selected toolkits array
 
-                        // Update the UI to reflect the parsed configuration
-                        const rightColumn = document.querySelector('.right-column');
-                        const cardBody = rightColumn.querySelector('.card-body');
-                        cardBody.innerHTML = ''; // Clear toolkit cards from the right column
-                        selectedToolkits.forEach(toolkit => {
-                            var toolkitCard = document.createElement('div');
-                            toolkitCard.className = 'card mt-2';
-                            var toolkitCardBody = document.createElement('div');
-                            toolkitCardBody.className = 'card-body';
-                            toolkitCardBody.textContent = "Toolkit: " + toolkit;
-                            toolkitCard.appendChild(toolkitCardBody);
-                            cardBody.appendChild(toolkitCard);
-                        });
-                        rightColumn.style.display = 'block'; // Show the right column
+                    // Reset the toolkits display section
+                    const rightColumn = document.querySelector('.right-column');
+                    const cardBody = rightColumn.querySelector('.card-body');
+                    cardBody.innerHTML = ''; // Clear toolkit cards from the right column
+                    rightColumn.style.display = 'none'; // Hide the right column
 
-                        // Perform the same actions as generate configuration
-                        // Show the assembly area
-                        document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
-                        document.getElementById('assemblyCode').style.display = 'block';   // Show the container
+                    // Hide the model card and Add Tools section
+                    document.getElementById('modelCard').style.display = 'none';
+                    document.getElementById('addTools').style.display = 'none';
+                    document.getElementById('addPrompt').style.display = 'none';
 
-                        // Automatically fetch and display the configuration
-                        fetch('/display-config')
-                            .then(response => response.json())
-                            .then(configData => {
-                                document.getElementById('assemblyCode').innerHTML = `<pre>${configData.final_template}</pre>`; // Use <pre> for formatting
-                                document.getElementById('assemblyRequirementsHeader').style.display = 'block'; // Show requirements header
-                                document.getElementById('assemblyRequirements').style.display = 'block'; // Show requirements section
-                                document.getElementById('assemblyRequirements').innerHTML = `<pre>${configData.requirements}</pre>`; // Use <pre> for formatting
-                            })
-                            .catch(error => console.error('Error displaying configuration:', error));
-                    }
+                    // Reset toolkit selection
+                    document.getElementById('toolSelect').selectedIndex = 0;
+                    document.getElementById('toolkitCard').style.display = 'none';
+                    document.getElementById('toolkitText').textContent = 'Selected Toolkit: None';
+
+                    // Show the assembly area
+                    document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
+                    document.getElementById('assemblyCode').style.display = 'block';   // Show the container
+
+                    // Fetch and display the configuration
+                    fetch('/display-config')
+                        .then(response => response.json())
+                        .then(configData => {
+                            if (configData.error) {
+                                alert(configData.error);
+                            } else {
+                                // Directly display the configuration data
+                                document.getElementById('configContent').textContent = JSON.stringify(configData, null, 2); // Use <pre> for formatting
+                                document.getElementById('buildFileHeader').style.display = 'block'; // Show header
+                                document.getElementById('buildFileContent').style.display = 'block'; // Show content
+                            }
+                        })
+                        .catch(error => console.error('Error fetching configuration:', error));
+
+                    // Trigger the assemble-config route
+                    fetch('/assemble-config', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(assembleData => {
+                        console.log("Template assembled successfully:", assembleData);
+                        alert(assembleData.message);
+
+                        // Display the final template code in the assemblyCode section
+                        document.getElementById('assemblyCode').innerHTML = `<pre>${assembleData.final_template}</pre>`; // Use <pre> for formatting
+
+                        // Display the generated requirements in the requirements section
+                        document.getElementById('assemblyRequirementsHeader').style.display = 'block'; // Show requirements header
+                        document.getElementById('assemblyRequirements').style.display = 'block'; // Show requirements section
+                        document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`; // Use <pre> for formatting
+                    })
+                    .catch(error => console.error('Error during assembly:', error));
                 })
                 .catch(error => console.error('Error uploading configuration:', error));
             } else {

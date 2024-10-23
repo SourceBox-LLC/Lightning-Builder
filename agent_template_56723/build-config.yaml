@@ -1,8 +1,0 @@
-build:
-  model: 'Selected Provider: None'
-  prompt: ''
-  toolkits: []
-project:
-  description: ''
-  name: ''
-  version: 1.0.0
