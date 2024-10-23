@@ -124,9 +124,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle configuration generation
     document.getElementById('generateConfigButton').addEventListener('click', function() {
         const selectedModel = document.getElementById('modelText').textContent.replace('Selected Model: ', '');
-        const agentPrompt = document.getElementById('promptText').value.trim(); // Capture the prompt text
-        const agentName = document.getElementById('agentName').value.trim(); // Capture the agent name
-        const agentDescription = document.getElementById('agentDescription').value.trim(); // Capture the agent description
+        const agentPrompt = document.getElementById('promptText').value.trim();
+        const agentName = document.getElementById('agentName').value.trim();
+        const agentDescription = document.getElementById('agentDescription').value.trim();
+
+        // Validate required fields
+        if (selectedModel === 'None') {
+            alert('Please select a model.');
+            return;
+        }
+        if (!agentPrompt) {
+            alert('Please enter a prompt.');
+            return;
+        }
+        if (!agentName) {
+            alert('Please enter an agent name.');
+            return;
+        }
+        if (!agentDescription) {
+            alert('Please enter an agent description.');
+            return;
+        }
 
         console.log("Generating configuration with model:", selectedModel, "toolkits:", selectedToolkits, "prompt:", agentPrompt, "name:", agentName, "description:", agentDescription);
 
@@ -138,10 +156,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 selected_model: selectedModel,
-                selected_toolkits: selectedToolkits, // No duplicates here
-                agent_prompt: agentPrompt, // Include the prompt in the request
-                agent_name: agentName, // Include the agent name
-                agent_description: agentDescription // Include the agent description
+                selected_toolkits: selectedToolkits,
+                agent_prompt: agentPrompt,
+                agent_name: agentName,
+                agent_description: agentDescription
             })
         })
         .then(response => response.json())
@@ -151,16 +169,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Reset values after configuration is generated successfully
             document.getElementById('modelText').textContent = 'Selected Model: None';
-            document.getElementById('promptText').value = ''; // Clear the prompt input
-            document.getElementById('agentName').value = ''; // Clear the agent name input
-            document.getElementById('agentDescription').value = ''; // Clear the agent description input
-            selectedToolkits.length = 0; // Clear the selected toolkits array
+            document.getElementById('promptText').value = '';
+            document.getElementById('agentName').value = '';
+            document.getElementById('agentDescription').value = '';
+            selectedToolkits.length = 0;
 
             // Reset the toolkits display section
             const rightColumn = document.querySelector('.right-column');
             const cardBody = rightColumn.querySelector('.card-body');
-            cardBody.innerHTML = ''; // Clear toolkit cards from the right column
-            rightColumn.style.display = 'none'; // Hide the right column
+            cardBody.innerHTML = '';
+            rightColumn.style.display = 'none';
 
             // Hide the model card and Add Tools section
             document.getElementById('modelCard').style.display = 'none';
@@ -173,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('toolkitText').textContent = 'Selected Toolkit: None';
 
             // Show the assembly area
-            document.getElementById('assemblyHeader').style.display = 'block'; // Show "Assembly" header
-            document.getElementById('assemblyCode').style.display = 'block';   // Show the container
+            document.getElementById('assemblyHeader').style.display = 'block';
+            document.getElementById('assemblyCode').style.display = 'block';
 
             // Automatically fetch and display the configuration
             fetch('/display-config')
@@ -183,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (configData.error) {
                         alert(configData.error);
                     } else {
-                        // Convert the configData back to a YAML string for display
                         const yamlString = `
 build:
   model: ${configData.build.model}
@@ -196,10 +213,9 @@ project:
   version: ${configData.project.version}
                         `;
 
-                        // Display the configuration in the buildFileContent section
-                        document.getElementById('configContent').textContent = yamlString; // Use <pre> for formatting
-                        document.getElementById('buildFileHeader').style.display = 'block'; // Show header
-                        document.getElementById('buildFileContent').style.display = 'block'; // Show content
+                        document.getElementById('configContent').textContent = yamlString;
+                        document.getElementById('buildFileHeader').style.display = 'block';
+                        document.getElementById('buildFileContent').style.display = 'block';
                     }
                 })
                 .catch(error => console.error('Error fetching configuration:', error));
@@ -216,13 +232,10 @@ project:
                 console.log("Template assembled successfully:", assembleData);
                 alert(assembleData.message);
 
-                // Display the final template code in the assemblyCode section
-                document.getElementById('assemblyCode').innerHTML = `<pre>${assembleData.final_template}</pre>`; // Use <pre> for formatting
-
-                // Display the generated requirements in the requirements section
-                document.getElementById('assemblyRequirementsHeader').style.display = 'block'; // Show requirements header
-                document.getElementById('assemblyRequirements').style.display = 'block'; // Show requirements section
-                document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`; // Use <pre> for formatting
+                document.getElementById('assemblyCode').innerHTML = `<pre>${assembleData.final_template}</pre>`;
+                document.getElementById('assemblyRequirementsHeader').style.display = 'block';
+                document.getElementById('assemblyRequirements').style.display = 'block';
+                document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`;
             })
             .catch(error => console.error('Error during assembly:', error));
 

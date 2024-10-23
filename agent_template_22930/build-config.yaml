@@ -1,9 +1,0 @@
-build:
-  model: Anthropic
-  prompt: You are a helpful assistant that can answer questions and help with tasks.
-  toolkits:
-  - Duck Duck Go Search
-project:
-  description: an agent with the duck duck go tool
-  name: duckduckgo agent
-  version: 1.0.0

@@ -1,7 +1,0 @@
-```
-python-dotenv
-langchain-anthropic
-langgraph
-langchain-community
-langchain-core
-```
