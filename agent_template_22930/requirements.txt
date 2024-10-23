@@ -1,0 +1,8 @@
+```
+python-dotenv
+langchain-anthropic
+langchain-core
+langgraph
+langchain-community
+duckduckgo-search  # Assuming there's a package for this tool
+```

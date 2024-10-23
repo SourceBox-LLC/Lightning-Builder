@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modelCard.style.display = 'block'; // Show the card
             addTools.style.display = 'block';  // Show the Add Tools section
             addScenarios.style.display = 'block';  // Show the Add Scenarios section
+            checkCompileContent(); // Check content after model selection
         } else {
             modelCard.style.display = 'none';  // Hide the card if no model is selected
             addTools.style.display = 'none';  // Hide the Add Tools section
@@ -90,6 +91,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Initially hide and disable the download button
+    const downloadButton = document.querySelector('#downloadTemplate button');
+    downloadButton.style.display = 'none';
+    downloadButton.disabled = true;
+
+    // Elements for spinner and waiting message
+    const spinner = document.getElementById('spinner');
+    const waitingMessage = document.getElementById('waitingMessage');
+
+    // Function to enable and show the download button
+    function enableDownloadButton() {
+        downloadButton.style.display = 'block';
+        downloadButton.disabled = false;
+    }
+
+    // Function to hide spinner and waiting message
+    function hideSpinnerAndMessage() {
+        if (spinner) spinner.style.display = 'none';
+        if (waitingMessage) waitingMessage.style.display = 'none';
+    }
+
+    // Function to check and hide spinner/message if content is present
+    function checkCompileContent() {
+        const modelText = document.getElementById('modelText').textContent;
+        if (modelText !== 'Selected Model: None') {
+            hideSpinnerAndMessage();
+        }
+    }
 
     // Handle configuration generation
     document.getElementById('generateConfigButton').addEventListener('click', function() {
@@ -195,6 +225,12 @@ project:
                 document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`; // Use <pre> for formatting
             })
             .catch(error => console.error('Error during assembly:', error));
+
+            // Enable the download button after successful configuration generation
+            enableDownloadButton();
+
+            // Check and hide spinner/message if content is present
+            checkCompileContent();
         })
         .catch(error => console.error('Error:', error));
     });
@@ -355,6 +391,12 @@ project:
                         document.getElementById('assemblyRequirements').innerHTML = `<pre>${assembleData.requirements}</pre>`; // Use <pre> for formatting
                     })
                     .catch(error => console.error('Error during assembly:', error));
+
+                    // Enable the download button after successful configuration submission
+                    enableDownloadButton();
+
+                    // Check and hide spinner/message if content is present
+                    checkCompileContent();
                 })
                 .catch(error => console.error('Error uploading configuration:', error));
             } else {
