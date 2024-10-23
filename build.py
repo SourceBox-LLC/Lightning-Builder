@@ -26,14 +26,14 @@ def test_config():
         # Example configuration data
         config = {
             'project': {
-                'name': 'Search Assistant',
+                'name': 'Math assistant',
                 'version': '1.0.0',
-                'description': 'a search agent with access to wikipedia and the duckduckgo engine.'
+                'description': 'a search agent with access to the Math toolkit.'
             },
             'build': {
                 'model': 'Anthropic',
-                'toolkits': ['Duck Duck Go Search', 'Wikipedia Search'],
-                'prompt': 'You are a helpful search assistant.'
+                'toolkits': ['Math'],
+                'prompt': 'You are a helpful math assistant.'
             }
         }
 
@@ -96,6 +96,23 @@ def gather_templates(config):
 
         template_dict["model template"] = model_template
 
+    elif config['build']['model'] == 'OpenAI':
+        openai_file_path = os.path.join('lightning-plates', 'main template', 'models', 'openai.txt')
+        with open(openai_file_path, 'r') as file:
+            openai_content = file.read()
+        model_template = openai_content
+        template_dict["model template"] = model_template
+    
+    elif config['build']['model'] == 'Meta Llama':
+        metallama_file_path = os.path.join('lightning-plates', 'main template', 'models', 'metallama.txt')
+        with open(metallama_file_path, 'r') as file:
+            metallama_content = file.read()
+        model_template = metallama_content
+        template_dict["model template"] = model_template
+    
+    else:
+        print('Error: no model found')
+
 
     # check which tools are being used
     toolkits = config['build']['toolkits']
@@ -121,6 +138,14 @@ def gather_templates(config):
                 wikipedia_search_tool = file.read()
 
             tool_templates_list.append(wikipedia_search_tool)
+        
+        elif tool == 'Multiply':
+            multiply_path = os.path.join('lightning-plates', 'main template', 'tools', 'multiply.txt')
+
+            with open(multiply_path, 'r') as file:
+                multiply_tool = file.read()
+
+            tool_templates_list.append(multiply_tool)
 
         else:
             print('Error: no tools found')

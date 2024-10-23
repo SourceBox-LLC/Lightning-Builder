@@ -2,10 +2,10 @@ build:
   model: Meta Llama
   prompt: You are a helpful assistant that can answer questions and help with tasks.
   toolkits:
-  - Multiply
+  - Math
   - Duck Duck Go Search
   - Wikipedia Search
 project:
-  description: agent with all tools available
-  name: full test agent
+  description: this is an all purpose agent that is for testing all available tools
+  name: all purpose
   version: 1.0.0

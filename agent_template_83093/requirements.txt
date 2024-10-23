@@ -1,0 +1,7 @@
+```
+python-dotenv
+langchain-nvidia-ai-endpoints
+langgraph
+langchain-core
+langchain-community
+```
